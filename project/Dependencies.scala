@@ -5,7 +5,7 @@ import sbt._
 object Dependencies {
 
   object SbtPlugin {
-    val kindProjector: ModuleID = "org.spire-math" %% "kind-projector" % "0.9.6"
+    val kindProjector: ModuleID = "org.spire-math" %% "kind-projector" % "0.9.7"
 
     val scalafmt: ModuleID           = "com.geirsson"      % "sbt-scalafmt"        % "1.6.0-RC1"
     val partialUnification: ModuleID = "org.lyranthe.sbt"  % "partial-unification" % "1.1.0"
@@ -29,8 +29,8 @@ object Dependencies {
   }
 
   object Cats {
-    val catsVersion: String   = "1.1.0"
-    val effectVersion: String = "0.10"
+    val catsVersion: String   = "1.2.0"
+    val effectVersion: String = "1.0.0-RC2"
 
     val core: ModuleID   = "org.typelevel" %% "cats-core"   % catsVersion
     val effect: ModuleID = "org.typelevel" %% "cats-effect" % effectVersion
@@ -45,11 +45,11 @@ object Dependencies {
   }
 
   object Crypto {
-    val jwtCirce: ModuleID = "com.pauldijou" %% "jwt-circe" % "0.16.0"
+    val jwtCirce: ModuleID = "com.pauldijou" %% "jwt-circe" % "0.17.0"
   }
 
   object Http4s {
-    val version: String = "0.18.12"
+    val version: String = "0.18.15"
 
     val blaze: ModuleID = "org.http4s" %% "http4s-blaze-server" % version
     val circe: ModuleID = "org.http4s" %% "http4s-circe"        % version
@@ -58,7 +58,7 @@ object Dependencies {
 
   object DB {
     val redis: ModuleID   = "net.debasishg"     %% "redisclient"        % "3.7"
-    val mongodb: ModuleID = "org.mongodb.scala" %% "mongo-scala-driver" % "2.3.0"
+    val mongodb: ModuleID = "org.mongodb.scala" %% "mongo-scala-driver" % "2.4.0"
   }
 
   object Scalatest {

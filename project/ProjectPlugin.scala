@@ -22,7 +22,7 @@ object ProjectPlugin extends AutoPlugin {
     organization              := "com.round",
     version                   := "0.0.1-SNAPSHOT",
     scalaVersion              := "2.12.6",
-    scalafixSemanticdbVersion := "4.0.0-M1",
+    scalafixSemanticdbVersion := "4.0.0-M7",
     scalafixConfig            := Some(file("project/scalafix.conf")),
   )
 
@@ -68,8 +68,18 @@ object ProjectPlugin extends AutoPlugin {
     )
   )
 
-  // See https://tpolecat.github.io/2017/04/25/scalac-flags.html
+  // See https://docs.scala-lang.org/overviews/compiler-options/index.html
   private lazy val scalacOptionsFor212 = Seq(
+    "-opt:l:inline",
+    "-opt-inline-from:com.round.**:cats.**:org.http4s.**",
+    "-opt:unreachable-code",
+    "-opt:simplify-jumps",
+    "-opt:compact-locals",
+    "-opt:copy-propagation",
+    "-opt:redundant-casts",
+    "-opt:box-unbox",
+    "-opt:nullness-tracking",
+    "-opt:closure-invocations",
     "-Xlint:constant",
     "-Ywarn-extra-implicit",
     "-Ywarn-unused:implicits",
