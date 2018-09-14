@@ -1,27 +1,50 @@
+import com.round._
 import com.round.Dependencies._
 
-lazy val root = (project in file("."))
-  .enablePlugins(com.round.ProjectPlugin)
-  .enablePlugins(com.round.ProtobufPlugin)
-  .enablePlugins(com.typesafe.sbt.packager.archetypes.JavaServerAppPackaging)
+enablePlugins(ProjectPlugin)
+
+fork in Test in ThisBuild := true
+
+resolvers in ThisBuild ++= Seq(
+  Resolver.url("enzief", url("https://raw.githubusercontent.com/enzief/publish-local/master/"))(
+    Resolver.ivyStylePatterns
+  ),
+  Resolver.bintrayRepo("rbmhtechnology", "maven")
+)
+
+skip in publish in ThisBuild := true
+
+lazy val grpc = (project in file("."))
+  .enablePlugins(
+    GcpDockerPlugin,
+    ProjectPlugin,
+    GrpcPlugin,
+    JavaServerAppPackaging
+  )
   .settings(
     name := "egreen-ci",
+    Compile / unmanagedResourceDirectories += sourceDirectory.value / "main/protobuf",
+    skip in publish            := false,
+    publishArtifact in makePom := true,
+    publishArtifact            := true,
     libraryDependencies ++= Seq(
+      commonsIo,
+      typesafeConfig,
+      Cassandra.driver,
       Cats.core,
       Cats.effect,
-      Circe.core,
-      Circe.literal,
-      Circe.parser,
-      Crypto.jwtCirce,
-      Http4s.blaze,
-      Http4s.circe,
-      Http4s.dsl,
-      DB.redis,
-      DB.mongodb,
+      Eventuate.core,
+      Eventuate.cassandra,
+      Eventuate.leveldb,
+      Fs2.core,
+      Grpc.netty,
+      Grpc.services,
+      Monocle.core,
+      Monocle.macros,
+      ScalaPB.grpc,
       ScalaPB.runtime,
-      typesafeConfig,
-      Scalatest.core % "test",
-      Logback.classic
+      Testing.scalaCheck,
+      Testing.scalatest
     )
   )
 
@@ -35,4 +58,13 @@ addCommandAlias(
 addCommandAlias(
   "wip",
   ";headerCreate;test:headerCreate;fmt;test:compile"
+)
+
+addCommandAlias(
+  "check",
+  ";headerCheck;test:headerCheck" +
+    ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck" +
+    ";scalafixTest;test:scalafixTest" +
+    ";evicted;test:evicted" +
+    ";scalafix;test:scalafix;scalastyle;test:scalastyle"
 )

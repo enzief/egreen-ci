@@ -2,11 +2,13 @@ package com.round
 
 import de.heikoseeberger.sbtheader.FileType
 import de.heikoseeberger.sbtheader.HeaderPlugin, HeaderPlugin.autoImport._
-import scalafix.sbt.ScalafixPlugin, ScalafixPlugin.autoImport._
+import scalafix.sbt.ScalafixPlugin.autoImport._
 import sbt._
 import sbt.Keys._
 import sbtbuildinfo.BuildInfoPlugin, BuildInfoPlugin.autoImport._
+import sbtdynver.DynVerPlugin
 
+import scala.sys.process._
 import scala.util._
 
 /**
@@ -14,41 +16,39 @@ import scala.util._
   */
 object ProjectPlugin extends AutoPlugin {
 
-  override def requires: Plugins = BuildInfoPlugin && HeaderPlugin && ScalafixPlugin
-  override def trigger           = allRequirements
+  override def requires: Plugins =
+    BuildInfoPlugin && HeaderPlugin && DynVerPlugin
+
+  override def trigger = allRequirements
 
   override val buildSettings: Seq[Def.Setting[_]] = Seq(
-    name                      := "egreen-ci",
-    organization              := "com.round",
-    version                   := "0.0.1-SNAPSHOT",
-    scalaVersion              := "2.12.6",
-    scalafixSemanticdbVersion := "4.0.0-M7",
-    scalafixConfig            := Some(file("project/scalafix.conf")),
+    organization := "com.round",
+    scalaVersion := "2.12.6"
   )
 
   override val projectSettings: Seq[Def.Setting[_]] =
-    scalafixSettings ++
-      buildInfoSettings ++
+    buildInfoSettings ++
       headerSettings ++
       Seq(
-        // BLOCKED: https://github.com/coursier/coursier/issues/349
-        conflictManager            := ConflictManager.default,
-        publishArtifact in makePom := false,
-        publish                    := {},
-        publishLocal               := {},
-        publishArtifact            := false,
-        autoAPIMappings in Global  := true,
-        addCompilerPlugin(Dependencies.SbtPlugin.kindProjector),
+        conflictManager           := ConflictManager.strict,
+        dependencyOverrides       := DependencyOverrides.settings,
+        autoAPIMappings in Global := true,
+        addCompilerPlugin(Dependencies.CompilerPlugin.kindProjector),
+        addCompilerPlugin(Dependencies.CompilerPlugin.monadicFor),
+        addCompilerPlugin(scalafixSemanticdb("4.0.0-M11")),
         scalacOptions ++= commonScalacOptions ++ scalacOptionsFor212
       )
 
   private lazy val buildInfoSettings: Seq[Def.Setting[_]] = Seq(
     buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      version,
       scalaVersion,
-      sbtVersion
+      sbtVersion,
+      BuildInfoKey.action("lastCommitSha")(GitPlugin.gitCommitHash)
     ),
     buildInfoPackage :=
-      s"${organization.value}.egreen.build",
+      s"${organization.value}.build",
     buildInfoOptions += BuildInfoOption.BuildTime,
     buildInfoOptions += BuildInfoOption.ToJson
   )
@@ -58,7 +58,7 @@ object ProjectPlugin extends AutoPlugin {
     licenses  := Nil,
     headerLicense := Some(
       HeaderLicense.Custom(
-        "Copyright (c) 2018 Round, Inc.. All rights reserved."
+        "Copyright (c) 2018 TRIALBLAZE PTY. LTD. All rights reserved."
       )
     ),
     headerMappings := headerMappings.value ++ Map(
@@ -71,7 +71,7 @@ object ProjectPlugin extends AutoPlugin {
   // See https://docs.scala-lang.org/overviews/compiler-options/index.html
   private lazy val scalacOptionsFor212 = Seq(
     "-opt:l:inline",
-    "-opt-inline-from:com.round.**:cats.**:org.http4s.**",
+    "-opt-inline-from:com.roundblaze.**:cats.**:org.http4s.**",
     "-opt:unreachable-code",
     "-opt:simplify-jumps",
     "-opt:compact-locals",

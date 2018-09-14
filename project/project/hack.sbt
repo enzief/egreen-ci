@@ -1,1 +1,4 @@
-managedSources in Compile += baseDirectory.value / ".." / "Dependencies.scala"
+managedSources in Compile ++= Seq(
+  baseDirectory.value / ".." / "Dependencies.scala",
+  baseDirectory.value / ".." / "DependencyOverrides.scala"
+)

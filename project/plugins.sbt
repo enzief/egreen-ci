@@ -1,13 +1,15 @@
 import com.round.Dependencies.SbtPlugin._
 
-addSbtPlugin(scalafmt)
-addSbtPlugin(scalafix)
-addSbtPlugin(partialUnification)
-addSbtPlugin(sbtRevolver)
-addSbtPlugin(coursier)
-addSbtPlugin(sbtHeader)
-addSbtPlugin(buildInfo)
-addSbtPlugin(packager)
-addSbtPlugin(protoc)
+dependencyOverrides := com.round.DependencyOverrides.settings
 
-libraryDependencies += com.round.Dependencies.ScalaPB.compiler
+addSbtPlugin(buildInfo)
+addSbtPlugin(coursier)
+addSbtPlugin(dynver)
+addSbtPlugin(fs2gRPC)
+addSbtPlugin(packager)
+addSbtPlugin(partialUnification)
+addSbtPlugin(sbtHeader)
+addSbtPlugin(sbtRevolver)
+addSbtPlugin(scalafix)
+addSbtPlugin(scalafmt)
+addSbtPlugin(scalastyle)
