@@ -1,5 +1,6 @@
 import com.round._
 import com.round.Dependencies._
+import com.round.ProjectPlugin.IntegrationTestOps
 
 enablePlugins(ProjectPlugin)
 
@@ -18,6 +19,7 @@ lazy val grpc = (project in file("."))
     GrpcPlugin,
     JavaServerAppPackaging
   )
+  .enableIntegrationTests
   .settings(
     name := "egreen-ci",
     Compile / unmanagedResourceDirectories += sourceDirectory.value / "main/protobuf",
@@ -55,15 +57,14 @@ addCommandAlias(
 addCommandAlias(
   "wip",
   ";headerCreate;test:headerCreate;it:headerCreate" +
-  ";fmt" +
-  ";test:compile;it:compile"
+    ";fmt" +
+    ";test:compile;it:compile"
 )
 
 addCommandAlias(
   "check",
   ";headerCheck;test:headerCheck;it:headerCheck" +
-  ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;it:scalafmtCheck" +
-  ";evicted;test:evicted;it:evicted" +
-  ";scalafix;test:scalafix;it:scalafix" +
-  ";scalastyle;test:scalastyle;it:scalastyle"
+    ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;it:scalafmtCheck" +
+    ";evicted;test:evicted;it:evicted" +
+    ";scalafix;test:scalafix;it:scalafix"
 )
