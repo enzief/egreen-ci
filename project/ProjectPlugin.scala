@@ -26,16 +26,16 @@ object ProjectPlugin extends AutoPlugin {
 
   override val projectSettings: Seq[Def.Setting[_]] =
     buildInfoSettings ++
-    headerSettings ++
-    Seq(
-      conflictManager           := ConflictManager.strict,
-      dependencyOverrides       := DependencyOverrides.settings,
-      autoAPIMappings in Global := true,
-      addCompilerPlugin(Dependencies.CompilerPlugin.kindProjector),
-      addCompilerPlugin(Dependencies.CompilerPlugin.monadicFor),
-      addCompilerPlugin(scalafixSemanticdb("4.0.0")),
-      scalacOptions ++= commonScalacOptions ++ scalacOptionsFor212
-    )
+      headerSettings ++
+      Seq(
+        conflictManager           := ConflictManager.strict,
+        dependencyOverrides       := DependencyOverrides.settings,
+        autoAPIMappings in Global := true,
+        addCompilerPlugin(Dependencies.CompilerPlugin.kindProjector),
+        addCompilerPlugin(Dependencies.CompilerPlugin.monadicFor),
+        addCompilerPlugin(scalafixSemanticdb("4.0.0")),
+        scalacOptions ++= commonScalacOptions ++ scalacOptionsFor212
+      )
 
   private lazy val buildInfoSettings: Seq[Def.Setting[_]] = Seq(
     buildInfoKeys := Seq[BuildInfoKey](
@@ -60,8 +60,8 @@ object ProjectPlugin extends AutoPlugin {
       )
     ),
     headerMappings := headerMappings.value ++ Map(
-      FileType("sbt")      -> HeaderCommentStyle.cppStyleLineComment,
-      HeaderFileType.java  -> HeaderCommentStyle.cppStyleLineComment,
+      FileType("sbt") -> HeaderCommentStyle.cppStyleLineComment,
+      HeaderFileType.java -> HeaderCommentStyle.cppStyleLineComment,
       HeaderFileType.scala -> HeaderCommentStyle.cppStyleLineComment
     )
   )
@@ -141,8 +141,8 @@ object ProjectPlugin extends AutoPlugin {
         .settings(
           inConfig(IntegrationTest)(
             Defaults.testSettings ++
-            headerSettings ++
-            ScalafmtPlugin.scalafmtConfigSettings
+              headerSettings ++
+              ScalafmtPlugin.scalafmtConfigSettings
           ),
           Defaults.itSettings,
           IntegrationTest / testOptions := (Test / testOptions).value,
