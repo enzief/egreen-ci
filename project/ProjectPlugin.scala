@@ -11,9 +11,6 @@ import sbtdynver.DynVerPlugin
 import scala.sys.process._
 import scala.util._
 
-/**
-  * Common project settings.
-  */
 object ProjectPlugin extends AutoPlugin {
 
   override def requires: Plugins =
@@ -22,22 +19,23 @@ object ProjectPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   override val buildSettings: Seq[Def.Setting[_]] = Seq(
+    scalafixDependencies += Dependencies.scaluzzi,
     organization := "com.round",
-    scalaVersion := "2.12.6"
+    scalaVersion := "2.12.7"
   )
 
   override val projectSettings: Seq[Def.Setting[_]] =
     buildInfoSettings ++
-      headerSettings ++
-      Seq(
-        conflictManager           := ConflictManager.strict,
-        dependencyOverrides       := DependencyOverrides.settings,
-        autoAPIMappings in Global := true,
-        addCompilerPlugin(Dependencies.CompilerPlugin.kindProjector),
-        addCompilerPlugin(Dependencies.CompilerPlugin.monadicFor),
-        addCompilerPlugin(scalafixSemanticdb("4.0.0-M11")),
-        scalacOptions ++= commonScalacOptions ++ scalacOptionsFor212
-      )
+    headerSettings ++
+    Seq(
+      conflictManager           := ConflictManager.strict,
+      dependencyOverrides       := DependencyOverrides.settings,
+      autoAPIMappings in Global := true,
+      addCompilerPlugin(Dependencies.CompilerPlugin.kindProjector),
+      addCompilerPlugin(Dependencies.CompilerPlugin.monadicFor),
+      addCompilerPlugin(scalafixSemanticdb("4.0.0")),
+      scalacOptions ++= commonScalacOptions ++ scalacOptionsFor212
+    )
 
   private lazy val buildInfoSettings: Seq[Def.Setting[_]] = Seq(
     buildInfoKeys := Seq[BuildInfoKey](
@@ -58,12 +56,12 @@ object ProjectPlugin extends AutoPlugin {
     licenses  := Nil,
     headerLicense := Some(
       HeaderLicense.Custom(
-        "Copyright (c) 2018 TRIALBLAZE PTY. LTD. All rights reserved."
+        "Copyright (c) 2018 ROUND INC.. All rights reserved."
       )
     ),
     headerMappings := headerMappings.value ++ Map(
-      FileType("sbt") -> HeaderCommentStyle.cppStyleLineComment,
-      HeaderFileType.java -> HeaderCommentStyle.cppStyleLineComment,
+      FileType("sbt")      -> HeaderCommentStyle.cppStyleLineComment,
+      HeaderFileType.java  -> HeaderCommentStyle.cppStyleLineComment,
       HeaderFileType.scala -> HeaderCommentStyle.cppStyleLineComment
     )
   )
@@ -71,7 +69,7 @@ object ProjectPlugin extends AutoPlugin {
   // See https://docs.scala-lang.org/overviews/compiler-options/index.html
   private lazy val scalacOptionsFor212 = Seq(
     "-opt:l:inline",
-    "-opt-inline-from:com.roundblaze.**:cats.**:org.http4s.**",
+    "-opt-inline-from:com.round.**:cats.**:org.http4s.**",
     "-opt:unreachable-code",
     "-opt:simplify-jumps",
     "-opt:compact-locals",
@@ -121,6 +119,7 @@ object ProjectPlugin extends AutoPlugin {
     "-Xlint:unsound-match",
     "-Yno-adapted-args",
     "-Ypartial-unification",
+    "-Yrangepos",
     "-Ywarn-dead-code",
     "-Ywarn-inaccessible",
     "-Ywarn-infer-any",
@@ -129,4 +128,28 @@ object ProjectPlugin extends AutoPlugin {
     "-Ywarn-numeric-widen",
     "-Ywarn-value-discard"
   )
+
+  implicit final class IntegrationTestOps(private val p: Project) extends AnyVal {
+    import Dependencies.Testing
+    import org.scalafmt.sbt.ScalafmtPlugin
+
+    /**
+      * Enable integration test configuration and a default set of settings.
+      */
+    def enableIntegrationTests: Project =
+      p.configs(IntegrationTest)
+        .settings(
+          inConfig(IntegrationTest)(
+            Defaults.testSettings ++
+            headerSettings ++
+            ScalafmtPlugin.scalafmtConfigSettings
+          ),
+          Defaults.itSettings,
+          IntegrationTest / testOptions := (Test / testOptions).value,
+          libraryDependencies ++= Seq(
+            Testing.scalaCheck % "it,test",
+            Testing.scalatest  % "it,test"
+          )
+        )
+  }
 }

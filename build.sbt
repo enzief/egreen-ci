@@ -6,9 +6,6 @@ enablePlugins(ProjectPlugin)
 fork in Test in ThisBuild := true
 
 resolvers in ThisBuild ++= Seq(
-  Resolver.url("enzief", url("https://raw.githubusercontent.com/enzief/publish-local/master/"))(
-    Resolver.ivyStylePatterns
-  ),
   Resolver.bintrayRepo("rbmhtechnology", "maven")
 )
 
@@ -43,6 +40,8 @@ lazy val grpc = (project in file("."))
       Monocle.macros,
       ScalaPB.grpc,
       ScalaPB.runtime,
+      ScalazZio.core,
+      ScalazZio.interop,
       Testing.scalaCheck,
       Testing.scalatest
     )
@@ -50,21 +49,21 @@ lazy val grpc = (project in file("."))
 
 addCommandAlias(
   "fmt",
-  ";scalafmtSbt;scalafmt;test:scalafmt"
+  ";scalafmtSbt;scalafmt;test:scalafmt;it:scalafmt"
 )
 
-// while you're working, try putting "~wip" into your sbt console
-// ...but be prepared to let IntelliJ force you to reload!
 addCommandAlias(
   "wip",
-  ";headerCreate;test:headerCreate;fmt;test:compile"
+  ";headerCreate;test:headerCreate;it:headerCreate" +
+  ";fmt" +
+  ";test:compile;it:compile"
 )
 
 addCommandAlias(
   "check",
-  ";headerCheck;test:headerCheck" +
-    ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck" +
-    ";scalafixTest;test:scalafixTest" +
-    ";evicted;test:evicted" +
-    ";scalafix;test:scalafix;scalastyle;test:scalastyle"
+  ";headerCheck;test:headerCheck;it:headerCheck" +
+  ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;it:scalafmtCheck" +
+  ";evicted;test:evicted;it:evicted" +
+  ";scalafix;test:scalafix;it:scalafix" +
+  ";scalastyle;test:scalastyle;it:scalastyle"
 )
