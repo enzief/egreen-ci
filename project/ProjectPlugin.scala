@@ -1,4 +1,4 @@
-package trialblaze
+package com.round
 
 import scala.sys.process._
 import scala.util._
@@ -20,8 +20,8 @@ object ProjectPlugin extends AutoPlugin {
 
   override val buildSettings: Seq[Def.Setting[_]] = Seq(
     scalafixDependencies += Dependencies.scaluzzi,
-    organization := "trialblaze",
-    scalaVersion := "2.12.7"
+    organization := "com.round",
+    scalaVersion := "2.12.8"
   )
 
   override val projectSettings: Seq[Def.Setting[_]] =
@@ -56,7 +56,7 @@ object ProjectPlugin extends AutoPlugin {
     licenses  := Nil,
     headerLicense := Some(
       HeaderLicense.Custom(
-        "Copyright (c) 2018 TRIALBLAZE PTY. LTD. All rights reserved."
+        "Copyright (c) 2018 ROUND INC.. All rights reserved."
       )
     ),
     headerMappings := headerMappings.value ++ Map(

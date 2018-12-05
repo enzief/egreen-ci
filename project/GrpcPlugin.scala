@@ -1,4 +1,4 @@
-package trialblaze
+package com.round
 
 import org.lyranthe.fs2_grpc.java_runtime.sbt_gen.Fs2Grpc
 import org.lyranthe.fs2_grpc.java_runtime.sbt_gen.Fs2GrpcPlugin.autoImport._

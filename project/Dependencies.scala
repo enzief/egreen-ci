@@ -1,4 +1,4 @@
-package trialblaze
+package com.round
 
 import sbt._
 

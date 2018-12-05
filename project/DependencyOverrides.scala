@@ -1,6 +1,6 @@
-package trialblaze
+package com.round
 
-import trialblaze.Dependencies._
+import com.round.Dependencies._
 import sbt._
 
 /**
