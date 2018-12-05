@@ -1,6 +1,6 @@
-package com.round
+package trialblaze
 
-import com.round.Dependencies._
+import trialblaze.Dependencies._
 import sbt._
 
 /**
@@ -9,7 +9,6 @@ import sbt._
 object DependencyOverrides {
 
   val settings: Seq[ModuleID] = Seq(
-    commonsIo,
     typesafeConfig,
     slf4j,
     Akka.actor,
@@ -29,6 +28,7 @@ object DependencyOverrides {
     Netty.codec,
     Netty.handler,
     ScalaPB.grpc,
-    ScalaPB.runtime
+    ScalaPB.runtime,
+    Scalaz.core
   )
 }
