@@ -113,8 +113,9 @@ object Dependencies {
     val org:     String = "io.netty"
     val version: String = "4.1.32.Final"
 
-    val codec:   ModuleID = org % "netty-codec"   % version
-    val handler: ModuleID = org % "netty-handler" % version
+    val codec:     ModuleID = org % "netty-codec"     % version
+    val handler:   ModuleID = org % "netty-handler"   % version
+    val transport: ModuleID = org % "netty-transport" % version
   }
 
   object ScalaPB {

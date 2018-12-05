@@ -11,7 +11,7 @@ import sbtprotoc.ProtocPlugin.autoImport.PB
 object ProtobufPlugin extends AutoPlugin {
 
   override def requires: Plugins = ProtocPlugin
-  override def trigger           = allRequirements
+  override def trigger = allRequirements
 
   override val projectSettings: Seq[Def.Setting[_]] = Seq(
     watchSources ++= (sourceDirectory.in(Compile).value / "protobuf" ** "*.proto").get,

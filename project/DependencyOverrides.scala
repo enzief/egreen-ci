@@ -27,6 +27,7 @@ object DependencyOverrides {
     Grpc.stub,
     Netty.codec,
     Netty.handler,
+    Netty.transport,
     ScalaPB.grpc,
     ScalaPB.runtime,
     Scalaz.core

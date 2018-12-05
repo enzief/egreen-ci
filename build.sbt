@@ -27,7 +27,6 @@ lazy val grpc = (project in file("."))
     publishArtifact in makePom := true,
     publishArtifact            := true,
     libraryDependencies ++= Seq(
-      commonsIo,
       typesafeConfig,
       Cassandra.driver,
       Cats.core,
@@ -57,14 +56,14 @@ addCommandAlias(
 addCommandAlias(
   "wip",
   ";headerCreate;test:headerCreate;it:headerCreate" +
-    ";fmt" +
-    ";test:compile;it:compile"
+  ";fmt" +
+  ";test:compile;it:compile"
 )
 
 addCommandAlias(
   "check",
   ";headerCheck;test:headerCheck;it:headerCheck" +
-    ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;it:scalafmtCheck" +
-    ";evicted;test:evicted;it:evicted" +
-    ";scalafix;test:scalafix;it:scalafix"
+  ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;it:scalafmtCheck" +
+  ";evicted;test:evicted;it:evicted" +
+  ";scalafix;test:scalafix;it:scalafix"
 )
