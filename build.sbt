@@ -75,7 +75,6 @@ addCommandAlias(
 
 addCommandAlias(
   "check",
-  ";undeclaredCompileDependenciesTest;unusedCompileDependenciesTest" +
   ";headerCheck;test:headerCheck;it:headerCheck" +
   ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;it:scalafmtCheck" +
   ";evicted;test:evicted;it:evicted" +
