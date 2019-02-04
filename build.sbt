@@ -21,30 +21,43 @@ lazy val grpc = (project in file("."))
   )
   .enableIntegrationTests
   .settings(
-    name := "egreen-ci",
+    Compile / PB.protoSources += baseDirectory.in(Compile).value / "../grpc-spec/src",
     Compile / unmanagedResourceDirectories += sourceDirectory.value / "main/protobuf",
+    name                       := "egreen-ci",
     skip in publish            := false,
     publishArtifact in makePom := true,
     publishArtifact            := true,
     libraryDependencies ++= Seq(
+      betterFiles % Test,
+      enumeratum,
       typesafeConfig,
+      Akka.actor,
       Cassandra.driver,
       Cats.core,
       Cats.effect,
+      Cats.kernel,
+      CouchBase.coreIo,
+      CouchBase.javaClient,
       Eventuate.core,
       Eventuate.cassandra,
       Eventuate.leveldb,
       Fs2.core,
+      Google.protobuf,
+      Grpc.core,
       Grpc.netty,
       Grpc.services,
+      Grpc.stub,
+      Json.argonaut,
       Monocle.core,
       Monocle.macros,
+      ReactiveX.rxjava,
       ScalaPB.grpc,
+      ScalaPB.lenses,
       ScalaPB.runtime,
       ScalazZio.core,
       ScalazZio.interop,
-      Testing.scalaCheck,
-      Testing.scalatest
+      Testing.scalaCheck % Test,
+      Testing.scalatest  % Test
     )
   )
 
@@ -62,8 +75,10 @@ addCommandAlias(
 
 addCommandAlias(
   "check",
+  ";undeclaredCompileDependenciesTest;unusedCompileDependenciesTest" +
   ";headerCheck;test:headerCheck;it:headerCheck" +
   ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;it:scalafmtCheck" +
   ";evicted;test:evicted;it:evicted" +
-  ";scalafix;test:scalafix;it:scalafix"
+  ";scalafix --check;test:scalafix --check;it:scalafix --check" +
+  ";scalastyle;test:scalastyle;it:scalastyle"
 )

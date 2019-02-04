@@ -21,7 +21,7 @@ object ProjectPlugin extends AutoPlugin {
   override val buildSettings: Seq[Def.Setting[_]] = Seq(
     scalafixDependencies += Dependencies.scaluzzi,
     organization := "com.round",
-    scalaVersion := "2.12.7"
+    scalaVersion := "2.12.8"
   )
 
   override val projectSettings: Seq[Def.Setting[_]] =
@@ -33,8 +33,8 @@ object ProjectPlugin extends AutoPlugin {
       autoAPIMappings in Global := true,
       addCompilerPlugin(Dependencies.CompilerPlugin.kindProjector),
       addCompilerPlugin(Dependencies.CompilerPlugin.monadicFor),
-      addCompilerPlugin(scalafixSemanticdb("4.1.0")),
-      scalacOptions ++= commonScalacOptions ++ scalacOptionsFor212
+      addCompilerPlugin(scalafixSemanticdb("4.1.4")),
+      scalacOptions ++= commonScalacOptions ++ scalacOptionsFor212 ++ semanticdbOptions
     )
 
   private lazy val buildInfoSettings: Seq[Def.Setting[_]] = Seq(
@@ -71,6 +71,7 @@ object ProjectPlugin extends AutoPlugin {
     if (sys.env.contains("HELM_VERSION")) {
       Seq(
         "-opt:l:inline",
+        "-opt:l:method",
         "-opt-inline-from:**",
         "-opt:unreachable-code",
         "-opt:simplify-jumps",
@@ -79,7 +80,8 @@ object ProjectPlugin extends AutoPlugin {
         "-opt:redundant-casts",
         "-opt:box-unbox",
         "-opt:nullness-tracking",
-        "-opt:closure-invocations"
+        "-opt:closure-invocations",
+        "-Yopt-log-inline"
       )
     } else {
       Seq.empty
@@ -106,6 +108,7 @@ object ProjectPlugin extends AutoPlugin {
       "-feature",
       "-language:existentials",
       "-language:higherKinds",
+      "-language:implicitConversions",
       "-unchecked",
       "-Xfuture",
       "-Xlint:adapted-args",
@@ -136,20 +139,28 @@ object ProjectPlugin extends AutoPlugin {
       "-Ywarn-value-discard"
     )
 
+  private lazy val semanticdbOptions: Seq[String] =
+    Seq(
+      "-P:semanticdb:exclude:Macros.scala"
+    )
+
   implicit final class IntegrationTestOps(private val p: Project) extends AnyVal {
     import Dependencies.Testing
     import org.scalafmt.sbt.ScalafmtPlugin
+    import org.scalastyle.sbt.ScalastylePlugin
+    import org.scalastyle.sbt.ScalastylePlugin.autoImport._
 
-    /**
-      * Enable integration test configuration and a default set of settings.
+    /** Enable integration test configuration and a default set of settings.
       */
     def enableIntegrationTests: Project =
       p.configs(IntegrationTest)
         .settings(
           inConfig(IntegrationTest)(
             Defaults.testSettings ++
+            ScalafmtPlugin.scalafmtConfigSettings ++
             headerSettings ++
-            ScalafmtPlugin.scalafmtConfigSettings
+            scalafixConfigSettings(IntegrationTest) ++
+            scalastyleSettings
           ),
           Defaults.itSettings,
           IntegrationTest / testOptions := (Test / testOptions).value,
@@ -158,5 +169,12 @@ object ProjectPlugin extends AutoPlugin {
             Testing.scalatest  % "it,test"
           )
         )
+
+    private def scalastyleSettings: Seq[Def.Setting[_]] =
+      ScalastylePlugin.rawScalastyleSettings() ++
+      Seq(
+        scalastyleTarget  := target.value / "scalastyle-it-results.xml",
+        scalastyleSources := unmanagedSourceDirectories.value
+      )
   }
 }
